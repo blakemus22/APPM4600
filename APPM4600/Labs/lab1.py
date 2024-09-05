@@ -7,7 +7,7 @@ X = np.linspace(0,2 * np.pi, 100)
 Ya = np.sin(X)
 Yb = np.cos(X)
 
-
+# set the values of x and y
 x = np.linspace(0,10,100)
 y = np.arange(100)
 
