@@ -20,6 +20,7 @@ print(w)
 x_new = np.linspace(1,10,10)
 s = 3*w
 
+# this plots stuff, its not super interesting
 plt.plot(X, Ya)
 plt.plot(X, Yb)
 plt.plot(x_new,s)
