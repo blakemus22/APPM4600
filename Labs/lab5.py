@@ -57,8 +57,6 @@ def mod_bisection(f,fp,fpp,a,b,tol):
       astar = b
       ier = 0
       return [astar, ier,0]
-
-    count = 0
     d = 0.5*(a+b)
        
     while (abs(d-a)> tol):
