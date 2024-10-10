@@ -38,7 +38,7 @@ def bisection(f,a,b,tol):
 #     first verify there is a root we can find in the interval 
 
     fa = f(a)
-    fb = f(b);
+    fb = f(b)
     if (fa*fb>0):
        ier = 1
        astar = a
