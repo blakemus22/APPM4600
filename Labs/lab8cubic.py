@@ -7,12 +7,12 @@ from numpy.linalg import norm
 
 def driver():
     
-    f = lambda x: np.exp(x)
-    a = 0
+    f = lambda x: 1 / (1 + (10*x)**2)
+    a = -1
     b = 1
     
     ''' number of intervals'''
-    Nint = 3
+    Nint = 10
     xint = np.linspace(a,b,Nint+1)
     yint = f(xint)
 
@@ -34,8 +34,8 @@ def driver():
     print('nerr = ', nerr)
     
     plt.figure()    
-    plt.plot(xeval,fex,'ro-',label='exact function')
-    plt.plot(xeval,yeval,'bs--',label='natural spline') 
+    plt.plot(xeval,fex,'r-',label='exact function')
+    plt.plot(xeval,yeval,'b--',label='natural spline') 
     plt.legend
     plt.show()
      
@@ -51,16 +51,20 @@ def create_natural_spline(yint,xint,N):
     b = np.zeros(N+1)
 #  vector values
     h = np.zeros(N+1)
-    h[0] = xint[i]-xint[i-1]  
+    h[0] = xint[1] - xint[0]
     for i in range(1,N):
        h[i] = xint[i+1] - xint[i]
        b[i] = (yint[i+1]-yint[i])/h[i] - (yint[i]-yint[i-1])/h[i-1]
+    h[N] = xint[N] - xint[N-1]
 
 #  create the matrix A so you can solve for the M values
     A = np.zeros((N+1,N+1))
     A[0][0] = 1
     A[N][N] = 1
-    A = np.diag[h]
+    for r in range(1,N):
+        A[r][r-1] = h[r-1]/6
+        A[r][r] = (h[r-1] + h[r])/3
+        A[r][r+1] = h[r]/6
             
 
 #  Invert A    
@@ -73,8 +77,10 @@ def create_natural_spline(yint,xint,N):
     C = np.zeros(N)
     D = np.zeros(N)
     for j in range(N):
-       C[j] = # find the C coefficients
-       D[j] = # find the D coefficients
+       C[j] = yint[j]/h[j] - h[j]*M[j]/6
+       # find the C coefficients
+       D[j] = yint[j+1]/h[j+1] - h[j+1]*M[j+1]/6
+       # find the D coefficients
     return(M,C,D)
        
 def eval_local_spline(xeval,xi,xip,Mi,Mip,C,D):
@@ -84,7 +90,7 @@ def eval_local_spline(xeval,xi,xip,Mi,Mip,C,D):
 
     hi = xip-xi
    
-    yeval = 
+    yeval = (Mi / (hi*6))*(xip - xeval)**3 + (Mip/(hi*6)) *(xeval - xi)**3 + C*(xip-xeval) + D*(xeval-xi)
     return yeval 
     
     
