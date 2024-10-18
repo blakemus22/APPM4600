@@ -18,7 +18,7 @@ def driver():
 
 
     
-    ''' create points for evaluating the Lagrange interpolating polynomial'''
+    ''' create points for evaluating the interpolating polynomial'''
     Neval = 1000
     xeval = np.linspace(-1,1,Neval+1)
     yeval_l= np.zeros(Neval+1)
@@ -26,7 +26,7 @@ def driver():
 
     ''' evaluate lagrange poly '''
     for kk in range(Neval+1):
-        yeval_l[kk] = eval_lagrange(xeval[kk],xvals,yvals,N)
+        yeval_l[kk] = eval_bary(xeval[kk],xvals,yvals,N)
 
 
 
@@ -42,7 +42,7 @@ def driver():
     plt.show()
 
 
-def eval_lagrange(xeval,xint,yint,N):
+def eval_bary(xeval,xint,yint,N):
     if xeval in xint:
         return yint[xint.index(xeval)]
     
