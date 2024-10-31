@@ -116,5 +116,3 @@ def  eval_cubic_spline(xeval,Neval,xint,Nint,M,C,D):
     return(yeval)
            
 driver()               
-
-
