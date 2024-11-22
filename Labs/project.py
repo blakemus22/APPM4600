@@ -24,6 +24,31 @@ plt.legend()
 plt.title("Calculated minimax approximation")
 
 plt.subplot(1,2,2)
-plt.plot(x,abs(error), color = "slateblue")
-plt.title("Absolute error of the approximation")
+plt.plot(x,error, color = "slateblue")
+plt.axhline(0, color = 'black')
+plt.title("Error of the approximation")
 plt.show()
+
+
+
+# x2 = np.linspace(.25,4,500)
+# y = np.log(x2) + np.cos(x2) - x2/5
+# plt.plot(x2,y, color = "indianred")
+# plt.title("$f(x) = \ln(x) + \cos(x) - x/5$")
+# plt.show()
+
+
+
+error_vec = [.3599,.1029,.0351,.0208,.0113,.0059,.0032,.0017,.00095]
+def compute_order(x):
+    diff1 = np.abs(x[1::])
+
+    diff2 = np.abs(x[0:-1])
+    fit = np.polyfit(np.log(diff2.flatten()), np.log(diff1.flatten()), 1)
+    print('the order of the equation is')
+    print('log|(p_{n+1}-p}) = log(lambda) + alpha*log(|p_n-p|) where')
+    print('lambda = ' + str(np.exp(fit[1])))
+    print('alpha = ' + str(fit[0]))
+    return [fit, diff1, diff2]
+
+# compute_order(error_vec)

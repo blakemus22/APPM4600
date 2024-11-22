@@ -5,18 +5,30 @@ from numpy.linalg import inv
 
 
 def driver():
-    N = 3 # degree of polynomial
+    N = 9 # degree of polynomial
     max_iter = 25 # maximum iterations of remez
     tol = 1e-6 # tolerance of remez algorithm
 
-    f = lambda x: np.e**x 
-    fp = lambda x: np.e**x
+    f = lambda x: np.log(x) + np.cos(x) - x/5
+    fp = lambda x: 1/x - np.sin(x) - 1/5
 
-    pts = [-1,-.5,0,.5,1]
+    a = .25
+    b = 4
+    pts = [a + (b-a)/(N+1)*j for j in range(N+2)]
 
-    (error,coef) = remez(pts,f, fp, max_iter,tol)
+    (its,error,coef) = remez(pts,f, fp, max_iter,tol)
     print("coefficients for final model:", coef)
     print("error for final model", error)
+    print("number of iterations:", its)
+
+    xvals = np.linspace(pts[0],pts[-1],500)
+    approx = [eval(x,coef) for x in xvals]
+    fex = f(xvals)
+    plt.plot(xvals, approx, color = "slateblue", label = "Approximation")
+    plt.plot(xvals,fex,color = "indianred", label = "True function")
+    plt.title("Final Approxmation")
+    plt.legend()
+    plt.show()
 
 
 
@@ -45,6 +57,7 @@ def eval_error_deriv(fp, x, coef):
 def solve(nodes, fvals):
     '''takes the nodes and function values as input, outputs the coefficients for p(x) with
     oscillating error at those nodes'''
+
     A = np.zeros((len(fvals),len(fvals)))
     for i in range(len(fvals)):
         A[i][-1] = (-1)**i
@@ -55,6 +68,21 @@ def solve(nodes, fvals):
 
     x = inv(A) @ fvals
     return [x[:-1], x[-1]]
+def special_bisection(f,funcp, func,a,b,tol, coefs,max_iter):
+    '''this function is only to calculate the max value in the interval that touches the endpoints'''
+    fpa = f(funcp,a,coefs)
+    fpb = f(funcp,b,coefs)
+
+    fa = f(func,a,coefs)
+    fb = f(func,a,coefs)
+    if (fpa*fpb >0):
+        if abs(fa) > abs(fb):
+            return [a,0]
+        else:
+            return [b,0]
+    else:
+        return bisection(f,func,a,b,tol,coefs,max_iter)
+
 
 def bisection(f,func,a,b,tol,coefs,max_iter):
     '''input the endpoints and the function, find the root in that interval'''
@@ -112,11 +140,12 @@ def remez(nodes, f, fp, max_iter, tol):
 
         # plot the error function
         funcvals = [eval_error(f,x,c) for x in xvals]
-        plt.plot(xvals, funcvals, color = "indianred")
-        plt.plot(cur_nodes, [eval_error(f,node,c) for node in cur_nodes], 'o', color = "slateblue")
-        plt.vlines(cur_nodes,[0]*len(cur_nodes),[eval_error(f,node,c) for node in cur_nodes],linestyle = "-", color = "slateblue")
-        plt.axhline(0, color = "black")
-        plt.show()
+        # plt.plot(xvals, funcvals, color = "indianred")
+        # plt.plot(cur_nodes, [eval_error(f,node,c) for node in cur_nodes], 'o', color = "slateblue")
+        # plt.vlines(cur_nodes,[0]*len(cur_nodes),[eval_error(f,node,c) for node in cur_nodes],linestyle = "--", color = "slateblue")
+        # plt.axhline(0, color = "black")
+        # plt.title(f'Remez Approximation at Iteration {i}')
+        # plt.show()
 
         # generate the n+1 zeros of the function
         zeros = [bisection(eval_error, f,cur_nodes[j], cur_nodes[j+1], 1e-3, c, 25)[0] for j in range(len(cur_nodes)-1)]
@@ -130,13 +159,20 @@ def remez(nodes, f, fp, max_iter, tol):
         error = [abs(eval_error(f,node,c)) for node in cur_nodes]
         if  max(error) - min(error) < tol:
             fvals = np.array([f(cur_node) for cur_node in cur_nodes])
-            return (max(error),solve(cur_nodes,fvals)[0])
+            # final graph
+            plt.plot(xvals, funcvals, color = "indianred")
+            plt.plot(cur_nodes, [eval_error(f,node,c) for node in cur_nodes], 'o', color = "slateblue")
+            plt.vlines(cur_nodes,[0]*len(cur_nodes),[eval_error(f,node,c) for node in cur_nodes],linestyle = "--", color = "slateblue")
+            plt.axhline(0, color = "black")
+            plt.title("Final Remez Approximation")
+            plt.show()
+            return (i+1,max(error),solve(cur_nodes,fvals)[0])
 
 
     # if we get here, the stopping criteria has been reached. not good
     fvals = np.array([f(cur_node) for cur_node in cur_nodes])   
     print("Hey just a heads up: we reached the maximum amount of iterations, you are probably in trouble!") 
-    return (max(error),solve(cur_nodes,fvals)[0])
+    return (max_iter, max(error),solve(cur_nodes,fvals)[0])
 
 
 driver()
