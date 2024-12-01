@@ -16,12 +16,15 @@ def driver():
     # part b
 
     mat = create_h(16)
-    invmat = inv(mat)
-    print(invmat)
-    #eigen, error ,its = power_method(invmat,1e-5, 16,50)
-    #print("The smallest eigenvalue in the 16 x 16 matrix:", eigen)
-    #print("Number of iterations:", its)
-    #print("Error message:", error)
+    eigen, _, _ = power_method(mat,1e-5, 16,50)
+    lambdaI = np.diag(np.full(16,eigen))
+    newmat = mat - lambdaI
+    print(eigen)
+    eigen2, error2 ,its2 = power_method(newmat,1e-2, 16,100)
+    print(eigen2)
+    print("The smallest eigenvalue in the 16 x 16 matrix:", eigen2 + eigen)
+    print("Number of iterations:", its2)
+    print("Error message:", error2)
 
 
 
