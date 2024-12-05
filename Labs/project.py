@@ -19,14 +19,16 @@ p = a1 * x + a0
 error = eee - p
 plt.subplot(1,2,1)
 plt.plot(x,eee, color = "indianred", label = "$f(x) = e^x$")
-plt.plot(x, p, color = "slateblue", label = "p(x):  Minimax approximation")
+plt.plot(x, p, color = "slateblue", label = "Minimax Approximation: $p(x) = 1.264 + 1.175x$")
 plt.legend()
-plt.title("Calculated minimax approximation")
+plt.title("Minimax approximation of $f(x) = e^x$ on the interval [-1,1]")
 
 plt.subplot(1,2,2)
 plt.plot(x,error, color = "slateblue")
 plt.axhline(0, color = 'black')
-plt.title("Error of the approximation")
+plt.title("Error of the minimax approximation, $f(x) - p(x)$")
+plt.vlines([-1,np.log(a1),1], [0,0,0], [np.e**(-1) - (a0-a1),a1 - (a1*np.log(a1)+a0), np.e - (a1+a0)], linestyle = "--", color = "indianred")
+plt.plot([-1,np.log(a1),1],[np.e**(-1) - (a0-a1),a1 - (a1*np.log(a1)+a0), np.e - (a1+a0)], 'o', color = 'slateblue')
 plt.show()
 
 
