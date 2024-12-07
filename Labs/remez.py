@@ -5,22 +5,22 @@ from numpy.linalg import inv
 
 
 def driver():
-    N = 4 # degree of polynomial
+    N = 8 # degree of polynomial
     max_iter = 25 # maximum iterations of remez
-    tol = 1e-3 # tolerance of remez algorithm
+    tol = 1e-9 # tolerance of remez algorithm
 
     # f = lambda x: np.log(x) + np.cos(x) - x/5
     # fp = lambda x: 1/x - np.sin(x) - 1/5
 
-    f = lambda x: np.sin(x) 
-    fp = lambda x: np.cos(x) 
+    f = lambda x: np.e**x 
+    fp = lambda x: np.e**x
 
-    a = -np.pi
-    b = np.pi
+    a = -1
+    b = 1
     pts_cheby = [a] + [b*np.cos((2*k-1)*np.pi/(2*N)) for k in range(1,N+1)][::-1] + [b]
     pts = [a + (b-a)/(N+1)*j for j in range(N+2)]
 
-    (its,error,coef) = remez(pts_cheby,f, fp, max_iter,tol)
+    (its,error,coef) = remez(pts,f, fp, max_iter,tol)
     print("coefficients for final model:", coef)
     print("error for final model", error)
     print("number of iterations:", its)
@@ -169,6 +169,7 @@ def remez(nodes, f, fp, max_iter, tol):
             plt.axhline(0, color = "black")
             plt.title("Final Remez Approximation")
             plt.show()
+        
             return (i+1,max(error),solve(cur_nodes,fvals)[0])
 
 
